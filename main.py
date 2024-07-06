@@ -125,7 +125,7 @@ tasks_filt.head()
 #
 
 # %%
-token = "secret_JINc4pqh4y728ZDJZAOPVdlFcp5Adf55jYz1pR7ZD1L"
+token = auth=os.environ["NOTION_API_TOKEN"]
 databaseID = "2de0f27ab58e4c74a9067c92ca7cc07a"
 headers = {
     "Authorization": "Bearer " + token,
