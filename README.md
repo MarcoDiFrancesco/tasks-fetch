@@ -1,6 +1,6 @@
 # Tasks fetch
 
-Import tasks from Google Tasks and show how much time it took in weeks.
+Import **Google Tasks** to **Notion** and show how much time it took in weeks.
 
 ![](assets/image.png)
 
@@ -8,4 +8,4 @@ Import tasks from Google Tasks and show how much time it took in weeks.
 
 Get files:
 - clinet_secret.json
-
+- env
