@@ -18,6 +18,8 @@ import requests
 import json
 from dotenv import load_dotenv
 
+load_dotenv()
+
 
 # %%
 def get_creds():
@@ -396,8 +398,6 @@ ids = get_time_tuples(notion_db)
 
 # %%
 def add_weeks_taken_to_notion():
-    load_dotenv()
-
     for page_id_notion, completed, created in ids:
         completed = parse(completed).date()
         created = parse(created).date()
