@@ -1,3 +1,8 @@
 .git/
 .venv/
 __pycache__/
+
+# Env files
+.env
+client_secret.json
+token.pickle

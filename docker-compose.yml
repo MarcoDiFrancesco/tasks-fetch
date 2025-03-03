@@ -1,9 +1,15 @@
 services:
   tasks-fetch:
+    container_name: tasks-fetch
     build: .
     env_file:
       - .env
     environment:
       - PYTHONUNBUFFERED=1
+    volumes:
+      - ./client_secret.json:/app/client_secret.json
+      - ./.env:/app/.env
+    # Development
     # volumes:
-    #   - .:/app
+      # - .:/app
+
