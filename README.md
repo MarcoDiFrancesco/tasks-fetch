@@ -4,6 +4,9 @@ Import **Google Tasks** to **Notion** and show how much time it took in weeks.
 
 ![](assets/image.png)
 
+**Python version: 3.12**
+
+
 ## Setup
 
 Get files:
@@ -17,3 +20,12 @@ https://console.cloud.google.com/welcome
 
 - *.env.example* -> *.env*  
 https://www.notion.so/profile/integrations
+
+
+## Docker
+
+**Warning**: image creation can't be automated with github actions: even with credentials.json the script requires tocken.pickle generated through a browser and login with google account, and refreshed once in a while.
+
+```bash
+docker compose up
+```

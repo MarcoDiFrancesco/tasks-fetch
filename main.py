@@ -21,12 +21,13 @@ import json
 def get_creds():
     """
     Use "OAuth 2.0 Client IDs". Do not use "Service Account" since it would show the tasks from that account.
-
+    
     Get credentials from:
     https://console.cloud.google.com/welcome?project=tasks-fetch
     -> APIs & Services
     -> Credentials
     -> OAuth 2.0 Client IDs
+    -> Download OAuth Client (right button)
     -> Download JSON
     """
     # Specify the scopes required for your application
@@ -44,6 +45,8 @@ def get_creds():
     # If there are no (valid) credentials available, let the user log in
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
+            # If 'Bad Request': delete 'token.pickle'
+            os.remove(token_file)
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(credentials_file, SCOPES)
@@ -398,7 +401,7 @@ def add_weeks_taken_to_notion():
     for page_id_notion, completed, created in ids:
         completed = parse(completed).date()
         created = parse(created).date()
-        delta = completed - created
+        delta = created - completed
 
         print(f"Delta: {delta.days} days")
 
