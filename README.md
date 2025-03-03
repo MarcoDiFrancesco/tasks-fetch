@@ -6,6 +6,9 @@ Import **Google Tasks** to **Notion** and show how much time it took in weeks.
 
 **Python version: 3.12**
 
+Virtual environment:
+- `pyenv virtualenv 3.12.0 tasks-fetch`
+- `pyenv activate tasks-fetch`
 
 ## Setup
 

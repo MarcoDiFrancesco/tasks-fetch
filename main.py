@@ -13,46 +13,43 @@ from google.auth.transport.requests import Request
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from google_auth_oauthlib.flow import Flow
 import requests
 import json
 
 
 # %%
 def get_creds():
-    """
-    Use "OAuth 2.0 Client IDs". Do not use "Service Account" since it would show the tasks from that account.
-    
-    Get credentials from:
-    https://console.cloud.google.com/welcome?project=tasks-fetch
-    -> APIs & Services
-    -> Credentials
-    -> OAuth 2.0 Client IDs
-    -> Download OAuth Client (right button)
-    -> Download JSON
-    """
-    # Specify the scopes required for your application
     SCOPES = ["https://www.googleapis.com/auth/tasks.readonly"]
-
     creds = None
     token_file = "token.pickle"
     credentials_file = "client_secret.json"
 
-    # Check if token.pickle exists, which contains the user's access and refresh tokens
     if os.path.exists(token_file):
         with open(token_file, "rb") as token:
             creds = pickle.load(token)
 
-    # If there are no (valid) credentials available, let the user log in
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
-            # If 'Bad Request': delete 'token.pickle'
-            os.remove(token_file)
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(credentials_file, SCOPES)
-            creds = flow.run_local_server(port=0)
+            try:
+                creds.refresh(Request())
+            except Exception:
+                if os.path.exists(token_file):
+                    os.remove(token_file)
+                creds = None
 
-        # Save the credentials for the next run
+        if not creds:
+            with open(credentials_file, "r") as f:
+                client_config = json.load(f)
+            flow = Flow.from_client_config(
+                client_config, scopes=SCOPES, redirect_uri="urn:ietf:wg:oauth:2.0:oob"
+            )
+            auth_url, _ = flow.authorization_url(prompt="consent")
+            print(f"Go to this link:\n{auth_url}\n")
+            code = input("Enter authorization code: ")
+            flow.fetch_token(code=code)
+            creds = flow.credentials
+
         with open(token_file, "wb") as token:
             pickle.dump(creds, token)
 
@@ -128,7 +125,7 @@ tasks_filt.head()
 #
 
 # %%
-token = auth=os.environ["NOTION_API_TOKEN"]
+token = auth = os.environ["NOTION_API_TOKEN"]
 databaseID = "2de0f27ab58e4c74a9067c92ca7cc07a"
 headers = {
     "Authorization": "Bearer " + token,
@@ -417,7 +414,6 @@ def add_weeks_taken_to_notion():
         else:
             week_label = "3+ Weeks"
 
-
         props_json = {
             "Weeks Taken": {
                 "select": {"name": week_label},
@@ -425,5 +421,6 @@ def add_weeks_taken_to_notion():
         }
 
         updatePageDatabase(page_id_notion, headers, props_json)
+
 
 add_weeks_taken_to_notion()
